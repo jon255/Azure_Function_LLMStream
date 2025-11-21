@@ -1,0 +1,17 @@
+{
+  "name": "azure-static-web-app-api",
+  "version": "1.0.0",
+  "description": "API backend for Azure Static Web App - Speech + LLM Agent",
+  "main": "index.js",
+  "type": "commonjs",
+  "dependencies": {
+    "@azure/ai-projects": "^1.0.0",
+    "@azure/core-auth": "^1.5.0",
+    "@azure/identity": "^4.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.31.0",
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
