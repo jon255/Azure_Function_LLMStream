@@ -18,12 +18,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install dependencies for llmStream function
         run: |
           cd api/llmStream
           npm install
 
-      - name: Create ZIP package
+      - name: Build deployable ZIP
         run: |
           mkdir deploy
           cp host.json deploy/
@@ -46,4 +46,19 @@ jobs:
 
     steps:
       - name: Download artifact
-        us
+        uses: actions/download-artifact@v4
+        with:
+          name: function-package
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8940382BC7DC44369A0795AECB8B0020 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E85CAF18B4654C338C64BC53BBD130D5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_67DD5F984F4F4C5D8859D743A8249470 }}
+
+      - name: Deploy Function App
+        uses: Azure/functions-action@v1
+        with:
+          app-name: "umwazfaAIXRHEALSllmstream"
+          package: release.zip
