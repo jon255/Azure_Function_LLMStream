@@ -30,8 +30,8 @@ jobs:
           cp host.json deploy/
           cp package.json deploy/
           if [ -f package-lock.json ]; then cp package-lock.json deploy/; fi
-          mkdir -p deploy/llmStream
-          cp -R llmStream/* deploy/llmStream/
+          mkdir -p deploy/LLMStream
+          cp -R LLMStream/* deploy/LLMStream/
           cd deploy
           zip -r ../release.zip .
 

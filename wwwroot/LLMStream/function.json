@@ -6,7 +6,7 @@
       "direction": "in",
       "methods": ["post"],
       "name": "req",
-      "route": "llmStream"
+      "route": "LLMStream"
     },
     {
       "type": "http",
