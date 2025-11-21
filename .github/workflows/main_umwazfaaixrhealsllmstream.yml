@@ -1,81 +1,67 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js project to Azure Function App - umwazfaAIXRHEALSllmstream
+name: Deploy LLMStream Function
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
-
-env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
-  NODE_VERSION: '20.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node ${{ env.NODE_VERSION }} Environment
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
-      - name: 'Resolve Project Dependencies Using Npm'
-        shell: bash
+      - name: Install dependencies for llmStream function
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          cd api/llmStream
           npm install
-          npm run build --if-present
-          npm run test --if-present
-          popd
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      - name: Build deployable ZIP
+        run: |
+          mkdir deploy
+          cp host.json deploy/
+          cp package.json deploy/
+          cp package-lock.json deploy/
+          mkdir -p deploy/api/llmStream
+          cp -R api/llmStream/* deploy/api/llmStream/
+          cd deploy
+          zip -r ../release.zip .
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
+          name: function-package
           path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: function-package
 
-      - name: Unzip artifact for deployment
-        run: |
-          unzip release.zip
-          rm release.zip
-      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C06C4DACF5A8444FAC6EFAAA977F5984 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F7EFC6825F594677928F14582A9EEA7D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5BC0A40C343E4E1BA2678E687ABDB70F }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8940382BC7DC44369A0795AECB8B0020 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E85CAF18B4654C338C64BC53BBD130D5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_67DD5F984F4F4C5D8859D743A8249470 }}
 
-      - name: 'Run Azure Functions Action'
+      - name: Deploy Function App
         uses: Azure/functions-action@v1
-        id: fa
         with:
-          app-name: 'umwazfaAIXRHEALSllmstream'
-          slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          
+          app-name: "umwazfaAIXRHEALSllmstream"
+          package: release.zip
