@@ -27,11 +27,11 @@ jobs:
       - name: Prepare deployment package
         run: |
           mkdir deploy
-          cp host.json deploy/
-          cp package.json deploy/
-          if [ -f package-lock.json ]; then cp package-lock.json deploy/; fi
+          cp wwwroot/host.json deploy/
+          cp wwwroot/package.json deploy/
+          if [ -f wwwroot/package-lock.json ]; then cp wwwroot/package-lock.json deploy/; fi
           mkdir -p deploy/LLMStream
-          cp -R LLMStream/* deploy/LLMStream/
+          cp -R wwwroot/LLMStream/* deploy/LLMStream/
           cd deploy
           zip -r ../release.zip .
 
