@@ -20,18 +20,26 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install dependencies (root)
+      # Install function dependencies inside /wwwroot
+      - name: Install Function App Dependencies
         run: |
-          npm install || true
+          cd wwwroot
+          npm install
 
+      # Build deployable package
       - name: Prepare deployment package
         run: |
           mkdir deploy
           cp wwwroot/host.json deploy/
           cp wwwroot/package.json deploy/
           if [ -f wwwroot/package-lock.json ]; then cp wwwroot/package-lock.json deploy/; fi
+
           mkdir -p deploy/llmStream
           cp -R wwwroot/llmStream/* deploy/llmStream/
+
+          # Include node_modules required at runtime
+          cp -R wwwroot/node_modules deploy/node_modules
+
           cd deploy
           zip -r ../release.zip .
 
