@@ -20,25 +20,27 @@ jobs:
         with:
           node-version: "22"
 
-      # Install function dependencies inside /wwwroot
-      - name: Install Function App Dependencies
+      # Install dependencies inside the function folder
+      - name: Install Function Dependencies
         run: |
-          cd wwwroot
+          cd api/llmstream
           npm install
 
-      # Build deployable package
+      # Prepare deployment package
       - name: Prepare deployment package
         run: |
           mkdir deploy
-          cp wwwroot/host.json deploy/
-          cp wwwroot/package.json deploy/
-          if [ -f wwwroot/package-lock.json ]; then cp wwwroot/package-lock.json deploy/; fi
 
-          mkdir -p deploy/api/llmStream
-          cp -R wwwroot/api/llmStream/* deploy/api/llmStream/
+          # Copy host.json
+          cp host.json deploy/
 
-          # Include node_modules required at runtime
-          cp -R wwwroot/node_modules deploy/node_modules
+          # Copy the function folder
+          mkdir -p deploy/api/llmstream
+          cp -R api/llmstream/* deploy/api/llmstream/
+
+          # Copy node_modules for the function
+          mkdir -p deploy/api/llmstream/node_modules
+          cp -R api/llmstream/node_modules deploy/api/llmstream/node_modules
 
           cd deploy
           zip -r ../release.zip .
