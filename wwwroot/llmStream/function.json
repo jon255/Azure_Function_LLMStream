@@ -1,0 +1,18 @@
+{
+  "scriptFile": "index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "methods": ["post"],
+      "name": "req",
+      "route": "llmStream"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}
