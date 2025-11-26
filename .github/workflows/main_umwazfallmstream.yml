@@ -34,8 +34,8 @@ jobs:
           cp wwwroot/package.json deploy/
           if [ -f wwwroot/package-lock.json ]; then cp wwwroot/package-lock.json deploy/; fi
 
-          mkdir -p deploy/llmStream
-          cp -R wwwroot/llmStream/* deploy/llmStream/
+          mkdir -p deploy/api/llmStream
+          cp -R wwwroot/api/llmStream/* deploy/api/llmStream/
 
           # Include node_modules required at runtime
           cp -R wwwroot/node_modules deploy/node_modules
